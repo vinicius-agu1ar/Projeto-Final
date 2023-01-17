@@ -1,0 +1,1 @@
+INSERT INTO ITEM (NAME, EXPIRATION_DATE, PRICE, DESCRIPTION) VALUES ("Tenis Nike", "2024-10-14 14:10:00", 699.90, "Tenis especial do Día de los Muertos");

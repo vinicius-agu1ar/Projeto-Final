@@ -1,0 +1,1 @@
+INSERT INTO ADDRESS (STREET, NUMBER, DISTRICT, CITY, STATE, ZIPCODE) VALUES ("Rua das Araras", 74, "Imbui", "Salvador", "Bahia", 41720010);
