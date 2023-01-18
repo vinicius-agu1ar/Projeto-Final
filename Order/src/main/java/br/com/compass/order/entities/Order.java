@@ -1,15 +1,18 @@
 package br.com.compass.order.entities;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Data
 @EqualsAndHashCode
+@Builder
 @Table(name = "ORDERS")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order {
 
     @Id
@@ -23,11 +26,10 @@ public class Order {
     @Column(name = "TOTAL")
     private BigDecimal total;
 
-    @ManyToOne
-    @JoinColumn(name = "ITEM_ID")
-    private Item item;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Item> item;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ADDRESS_ID")
     private Address address;
 }

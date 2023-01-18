@@ -2,9 +2,7 @@ package br.com.compass.order.exceptions.handler;
 
 import br.com.compass.order.enums.ErrorCode;
 import br.com.compass.order.enums.ErrorCodePTBR;
-import br.com.compass.order.exceptions.response.EntityInUseException;
-import br.com.compass.order.exceptions.response.ExceptionResponse;
-import br.com.compass.order.exceptions.response.OrderNotFoundException;
+import br.com.compass.order.exceptions.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -80,6 +78,20 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public final ResponseEntity<Object> handleOrderNotFoundException(OrderNotFoundException ex) {
         log.error(ex.getMessage());
         ExceptionResponse exceptionResponse = new ExceptionResponse(ErrorCode.ORDER_NOT_FOUND, ErrorCodePTBR.PEDIDO_NAO_ENCONTRADO, ex);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(InvalidZipcodeException.class)
+    public final ResponseEntity<Object> handleInvalidZipcodeException(InvalidZipcodeException ex){
+        log.error(ex.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse(ErrorCode.INVALID_ZIPCODE, ErrorCodePTBR.CEP_INVALIDO, ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(ItemNotFoundException.class)
+    public final ResponseEntity<Object> handleItemNotFoundException(ItemNotFoundException ex) {
+        log.error(ex.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse(ErrorCode.ITEM_NOT_FOUND, ErrorCodePTBR.ITEM_NAO_ENCONTRADO, ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 }

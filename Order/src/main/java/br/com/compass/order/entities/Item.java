@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -21,14 +21,17 @@ public class Item {
     private String name;
 
     @Column(name = "CREATION_DATE")
-    private LocalDateTime creationDate;
+    private LocalDate creationDate;
 
     @Column(name = "EXPIRATION_DATE")
-    private LocalDateTime expirationDate;
+    private LocalDate expirationDate;
 
     @Column(name = "PRICE")
     private BigDecimal price;
 
     @Column(name = "DESCRIPTION")
     private String description;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name = "ORDERS_ID")
+    private Order order;
 }

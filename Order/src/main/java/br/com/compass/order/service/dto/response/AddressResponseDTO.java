@@ -11,7 +11,7 @@ public class AddressResponseDTO {
 
     private String logradouro;
 
-    private Integer complemento;
+    private Integer numero;
 
     private String bairro;
 
@@ -19,5 +19,5 @@ public class AddressResponseDTO {
 
     private String uf;
 
-    private Integer cep;
+    private String cep;
 }

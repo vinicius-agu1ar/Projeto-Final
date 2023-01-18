@@ -1,8 +1,11 @@
 package br.com.compass.order.controller;
 
+import br.com.compass.order.client.AddressClient;
+import br.com.compass.order.repository.AddressRepository;
+import br.com.compass.order.repository.ItemRepository;
+import br.com.compass.order.service.OrderService;
 import br.com.compass.order.service.dto.request.OrderRequestDTO;
 import br.com.compass.order.service.dto.response.OrderResponseDTO;
-import br.com.compass.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -19,12 +22,17 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/pedidos")
 public class OrderController {
+    private final ItemRepository itemRepository;
 
     private final OrderService service;
 
+    private final AddressClient addressClient;
+
+    private final AddressRepository addressRepository;
+
     @PostMapping
     public ResponseEntity<OrderResponseDTO> create(@RequestBody @Valid OrderRequestDTO request) {
-        log.info("Criando um novo Request...");
+        log.info("Criando um novo Order...");
         OrderResponseDTO response = service.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

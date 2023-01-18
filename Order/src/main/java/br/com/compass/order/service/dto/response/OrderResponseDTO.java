@@ -1,11 +1,10 @@
 package br.com.compass.order.service.dto.response;
 
-import br.com.compass.order.entities.Address;
-import br.com.compass.order.entities.Item;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,7 +16,7 @@ public class OrderResponseDTO {
 
     private BigDecimal total;
 
-    private Item item;
+    private List<ItemResponseDTO> item;
 
-    private Address address;
+    private AddressResponseDTO address;
 }

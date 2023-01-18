@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class AddressRequestDTO {
     @NotNull
-    private Integer complemento;
+    private Integer numero;
     @NotNull
-    private Integer cep;
+    private String cep;
 }

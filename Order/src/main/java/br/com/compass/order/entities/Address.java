@@ -20,17 +20,17 @@ public class Address {
     private String logradouro;
 
     @Column(name = "NUMBER")
-    private Integer complemento;
+    private Integer numero;
 
     @Column(name = "DISTRICT")
-    private String district;
+    private String bairro;
 
     @Column(name = "CITY")
-    private String city;
+    private String localidade;
 
     @Column(name = "STATE")
-    private String state;
+    private String uf;
 
     @Column(name = "ZIPCODE")
-    private Integer cep;
+    private String cep;
 }

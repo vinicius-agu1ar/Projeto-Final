@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -14,9 +14,9 @@ public class ItemResponseDTO {
 
     private String name;
 
-    private LocalDateTime creationDate;
+    private LocalDate creationDate;
 
-    private LocalDateTime expirationDate;
+    private LocalDate expirationDate;
 
     private BigDecimal price;
 
