@@ -11,11 +11,9 @@ import org.springframework.stereotype.Component;
 public class OrderInputDisassembler {
 
     private final ModelMapper modelMapper;
-
-    public Order toDomainObject(OrderRequestDTO orderRequestDTO){
+    public Order toDomainObject(OrderRequestDTO orderRequestDTO) {
         return modelMapper.map(orderRequestDTO, Order.class);
     }
-
     public void copyToDomainObject(OrderRequestDTO orderRequestDTO, Order order){
         modelMapper.map(orderRequestDTO, order);
     }

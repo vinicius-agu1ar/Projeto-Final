@@ -5,6 +5,7 @@ import br.com.compass.order.entities.Address;
 import br.com.compass.order.entities.Item;
 import br.com.compass.order.entities.Order;
 import br.com.compass.order.exceptions.response.EntityInUseException;
+import br.com.compass.order.exceptions.response.InvalidDateUsageException;
 import br.com.compass.order.exceptions.response.OrderNotFoundException;
 import br.com.compass.order.repository.OrderRepository;
 import br.com.compass.order.service.assembler.OrderDTOAssembler;
@@ -13,6 +14,7 @@ import br.com.compass.order.service.dto.request.ItemRequestDTO;
 import br.com.compass.order.service.dto.request.OrderRequestDTO;
 import br.com.compass.order.service.dto.response.AddressResponseDTO;
 import br.com.compass.order.service.dto.response.OrderResponseDTO;
+import br.com.compass.order.service.dto.response.OrderResumeResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -23,10 +25,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -51,6 +55,7 @@ public class OrderService {
         List<Item> itemsList = getItems(request);
         Order order = orderBuilder(request, address, itemsList);
         order.getItem().forEach(item -> item.setOrder(order));
+        order.setTotal(finalPrice(order));
         repository.save(order);
         return assembler.toModel(order);
     }
@@ -69,6 +74,9 @@ public class OrderService {
         List<Item> itemsList = items.stream().map(item -> {
             Item itemEntity = modelMapper.map(item, Item.class);
             itemEntity.setCreationDate(LocalDate.now());
+            if(itemEntity.getExpirationDate().isBefore(itemEntity.getCreationDate())){
+                throw new InvalidDateUsageException();
+            }
             return itemEntity;
         }).toList();
         return itemsList;
@@ -79,6 +87,11 @@ public class OrderService {
         Address address = modelMapper.map(addressResponseDTO, Address.class);
         address.setNumero(request.getAddress().getNumero());
         return address;
+    }
+
+    public OrderResumeResponseDTO resumeResponse(OrderResponseDTO response){
+        OrderResumeResponseDTO resumeResponse = assembler.toResumeModel(response);
+        return resumeResponse;
     }
 
     @Transactional
@@ -150,5 +163,14 @@ public class OrderService {
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException();
         }
+    }
+
+    public BigDecimal finalPrice (Order order){
+        List<Item> items = order.getItem();
+        BigDecimal valor = items.stream().map(item -> {
+            Item itemEntity = modelMapper.map(item, Item.class);
+            return itemEntity.getPrice();
+        }).reduce(BigDecimal.ZERO, BigDecimal::add);
+        return valor;
     }
 }

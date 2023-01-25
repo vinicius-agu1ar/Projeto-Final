@@ -15,6 +15,7 @@ public enum ErrorCodePTBR {
     ITEM_NAO_ENCONTRADO("Item não encontrado, verifique antes de fazer esta solicitação novamente"),
     CEP_INVALIDO("CEP invalido, por favor verifique antes de fazer esta solicitação novamente"),
     CPF_INVALIDO("CPF invalido, por favor verifique antes de fazer esta solicitação novamente"),
+    USO_DATA_INVALIDO("Data invalida, por favor verifique antes de fazer esta solicitação novamente"),
     ENTIDADE_EM_USO("A entidade está em uso, verifique antes de executar esta ação novamente");
 
     private final String mensagem;

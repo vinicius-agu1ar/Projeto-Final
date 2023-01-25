@@ -1,13 +1,13 @@
 package br.com.compass.order.controller;
 
-import br.com.compass.order.client.AddressClient;
-import br.com.compass.order.repository.AddressRepository;
-import br.com.compass.order.repository.ItemRepository;
 import br.com.compass.order.service.OrderService;
 import br.com.compass.order.service.dto.request.OrderRequestDTO;
 import br.com.compass.order.service.dto.response.OrderResponseDTO;
+import br.com.compass.order.service.dto.response.OrderResumeResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -22,18 +22,17 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/pedidos")
 public class OrderController {
-    private final ItemRepository itemRepository;
 
     private final OrderService service;
-
-    private final AddressClient addressClient;
-
-    private final AddressRepository addressRepository;
+    @Autowired
+    private final RabbitTemplate template;
 
     @PostMapping
     public ResponseEntity<OrderResponseDTO> create(@RequestBody @Valid OrderRequestDTO request) {
         log.info("Criando um novo Order...");
         OrderResponseDTO response = service.create(request);
+        OrderResumeResponseDTO resumeResponse = service.resumeResponse(response);
+        template.convertAndSend("order_complete", resumeResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -54,8 +53,8 @@ public class OrderController {
     @PutMapping("/{id}")
     public ResponseEntity<OrderResponseDTO> update(@PathVariable("id") Long id, @RequestBody @Valid OrderRequestDTO request){
         log.info("Atualizando Order por id...");
-        OrderResponseDTO companyResponseDTO = service.update(id, request);
-        return ResponseEntity.status(HttpStatus.OK).body(companyResponseDTO);
+        OrderResponseDTO orderResponseDTO = service.update(id, request);
+        return ResponseEntity.status(HttpStatus.OK).body(orderResponseDTO);
     }
 
     @DeleteMapping ("/{id}")

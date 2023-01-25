@@ -1,1 +1,1 @@
-INSERT INTO ITEM (NAME, EXPIRATION_DATE, PRICE, DESCRIPTION, ORDERS_ID) VALUES ("Tenis Nike", "2024-10-14", 699.90, "Tenis especial do Día de los Muertos", 1);
+INSERT INTO ITEM (NAME, CREATION_DATE, EXPIRATION_DATE, PRICE, DESCRIPTION, ORDERS_ID) VALUES ("Tenis Nike", "2023-01-18", "2024-10-14", 699.90, "Tenis edicao especial Día de los muertos", 1);

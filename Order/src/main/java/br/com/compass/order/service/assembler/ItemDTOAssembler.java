@@ -6,9 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
 @RequiredArgsConstructor
 public class ItemDTOAssembler {
@@ -18,9 +15,4 @@ public class ItemDTOAssembler {
             return modelMapper.map(item, ItemResponseDTO.class);
     }
 
-    public List<ItemResponseDTO> toCollectionModel(List<Item> items){
-        return items.stream()
-                .map(this::toModel)
-                .collect(Collectors.toList());
-    }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 public class OrderResponseDTO {
 
-    private Long id;
+    private Long orderId;
 
     private String cpf;
 

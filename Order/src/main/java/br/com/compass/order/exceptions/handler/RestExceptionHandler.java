@@ -68,7 +68,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(EntityInUseException.class)
-    public final ResponseEntity<Object> handleEntityInUseException(Exception ex) {
+    public final ResponseEntity<Object> handleEntityInUseException(EntityInUseException ex) {
         log.error(ex.getMessage());
         ExceptionResponse exceptionResponse = new ExceptionResponse(ErrorCode.ENTITY_IN_USE, ErrorCodePTBR.ENTIDADE_EM_USO, ex);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(exceptionResponse);
@@ -92,6 +92,27 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public final ResponseEntity<Object> handleItemNotFoundException(ItemNotFoundException ex) {
         log.error(ex.getMessage());
         ExceptionResponse exceptionResponse = new ExceptionResponse(ErrorCode.ITEM_NOT_FOUND, ErrorCodePTBR.ITEM_NAO_ENCONTRADO, ex);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(InvalidDateUsageException.class)
+    public final ResponseEntity<Object> handleInvalidDateUsageException(InvalidDateUsageException ex){
+        log.error(ex.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse(ErrorCode.INVALID_DATE_USAGE, ErrorCodePTBR.USO_DATA_INVALIDO, ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(InvalidCpfException.class)
+    public final ResponseEntity<Object> handleInvalidCpfException(InvalidCpfException ex){
+        log.error(ex.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse(ErrorCode.INVALID_CPF, ErrorCodePTBR.CPF_INVALIDO, ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(AddressNotFoundException.class)
+    public final ResponseEntity<Object> handleAddressNotFoundException(AddressNotFoundException ex) {
+        log.error(ex.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse(ErrorCode.ADDRESS_NOT_FOUND, ErrorCodePTBR.ENDERECO_NAO_ENCONTRADO, ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 }

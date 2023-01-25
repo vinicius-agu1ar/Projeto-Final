@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class ItemRequestDTO {
     @NotBlank
     private String name;
-    @NotNull
+
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate expirationDate;
     @NotNull
