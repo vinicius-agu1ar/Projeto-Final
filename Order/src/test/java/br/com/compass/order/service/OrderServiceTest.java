@@ -7,8 +7,6 @@ import br.com.compass.order.exceptions.response.OrderNotFoundException;
 import br.com.compass.order.repository.OrderRepository;
 import br.com.compass.order.service.assembler.OrderDTOAssembler;
 import br.com.compass.order.service.disassembler.OrderInputDisassembler;
-import br.com.compass.order.service.dto.request.AddressRequestDTO;
-import br.com.compass.order.service.dto.request.ItemRequestDTO;
 import br.com.compass.order.service.dto.request.OrderRequestDTO;
 import br.com.compass.order.service.dto.response.OrderResponseDTO;
 import org.junit.jupiter.api.Assertions;
@@ -25,15 +23,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
