@@ -1,12 +1,16 @@
 package br.com.compass.order.service;
 
 import br.com.compass.order.client.AddressClient;
+import br.com.compass.order.entities.Address;
+import br.com.compass.order.entities.Item;
 import br.com.compass.order.entities.Order;
 import br.com.compass.order.exceptions.response.EntityInUseException;
 import br.com.compass.order.exceptions.response.OrderNotFoundException;
 import br.com.compass.order.repository.OrderRepository;
 import br.com.compass.order.service.assembler.OrderDTOAssembler;
 import br.com.compass.order.service.disassembler.OrderInputDisassembler;
+import br.com.compass.order.service.dto.request.AddressRequestDTO;
+import br.com.compass.order.service.dto.request.ItemRequestDTO;
 import br.com.compass.order.service.dto.request.OrderRequestDTO;
 import br.com.compass.order.service.dto.response.OrderResponseDTO;
 import org.junit.jupiter.api.Assertions;
@@ -23,6 +27,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,7 +79,6 @@ public class OrderServiceTest {
 
         assertThrows(OrderNotFoundException.class, () -> service.findBy(ID));
     }
-
     @Test
     void shouldCreateOrder_error() {
         Order order = new Order();
@@ -83,10 +88,10 @@ public class OrderServiceTest {
     }
 
     @Test
-    void shouldUpdateOrder_success() {
-        Order order = new Order();
-        OrderRequestDTO request = new OrderRequestDTO();
+    void shouldUpdateCompany_success() {
+        OrderRequestDTO request = new OrderRequestDTO("05529003540", new ArrayList<ItemRequestDTO>(), new AddressRequestDTO());
         OrderResponseDTO response = new OrderResponseDTO();
+        Order order = new Order(1L,"58120254520", BigDecimal.ZERO, new ArrayList<Item>(),new Address());
 
         Mockito.when(repository.findById(any())).thenReturn(Optional.of(order));
         Mockito.when(repository.save(any())).thenReturn(order);
@@ -168,4 +173,12 @@ public class OrderServiceTest {
 
         Assertions.assertEquals(orderResponseDTOS.get(0), response);
     }
+
+    @Test
+    void shouldCalculateFinalPrice(){
+        Order order = new Order(1L,"58120254520", BigDecimal.ZERO, new ArrayList<Item>(),new Address());
+        BigDecimal bigDecimal = service.finalPrice(order);
+        Assertions.assertEquals(bigDecimal, order.getTotal());
+    }
+
 }

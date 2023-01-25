@@ -26,7 +26,7 @@ public class Order {
     @Column(name = "TOTAL")
     private BigDecimal total;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<Item> item;
 
     @OneToOne(cascade = CascadeType.ALL)

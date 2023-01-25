@@ -17,4 +17,8 @@ public class OrderInputDisassembler {
     public void copyToDomainObject(OrderRequestDTO orderRequestDTO, Order order){
         modelMapper.map(orderRequestDTO, order);
     }
+
+    public void revertToDomainObject(Order order, OrderRequestDTO orderRequestDTO){
+        modelMapper.map(order, orderRequestDTO);
+    }
 }

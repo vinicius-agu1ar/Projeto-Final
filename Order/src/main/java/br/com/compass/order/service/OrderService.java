@@ -55,7 +55,7 @@ public class OrderService {
         Order order = orderBuilder(request, address, itemsList);
         order.getItem().forEach(item -> item.setOrder(order));
         order.setTotal(finalPrice(order));
-        repository.save(order);
+        repository.saveAndFlush(order);
         return assembler.toModel(order);
     }
 
@@ -146,8 +146,10 @@ public class OrderService {
     public OrderResponseDTO update(Long id, OrderRequestDTO request) {
         log.info("Chamando método update - Service Order");
         Order order = fetchOrFail(id);
+        BigDecimal bigDecimal = finalPrice(order);
+        order.setTotal(bigDecimal);
         disassembler.copyToDomainObject(request, order);
-        order = create(order);
+        repository.save(order);
         return assembler.toModel(order);
     }
 

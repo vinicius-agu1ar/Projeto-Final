@@ -115,4 +115,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionResponse exceptionResponse = new ExceptionResponse(ErrorCode.ADDRESS_NOT_FOUND, ErrorCodePTBR.ENDERECO_NAO_ENCONTRADO, ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
+
+    @ExceptionHandler(InvalidSyntaxException.class)
+    public final ResponseEntity<Object> handleInvalidSyntaxException(InvalidSyntaxException ex){
+        log.error(ex.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse(ErrorCode.INVALID_SYNTAX, ErrorCodePTBR.SINTAXE_INVALIDA, ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
 }

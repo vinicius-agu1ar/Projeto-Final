@@ -22,10 +22,10 @@ public class ItemService {
     @Transactional
     public ItemResponseDTO patch(Long id, String name) {
         log.info("Chamando método update - Service Item");
-            Item item = fetchOrFail(id);
-            item.setName(name);
-            repository.save(item);
-            return assembler.toModel(item);
+        Item item = fetchOrFail(id);
+        item.setName(name);
+        repository.save(item);
+        return assembler.toModel(item);
     }
 
     public Item fetchOrFail(Long id){

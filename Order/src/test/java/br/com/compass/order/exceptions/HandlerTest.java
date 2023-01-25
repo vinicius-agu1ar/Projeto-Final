@@ -59,4 +59,10 @@ public class HandlerTest {
         AddressNotFoundException ex = new AddressNotFoundException();
         assertEquals(HttpStatus.NOT_FOUND, handler.handleAddressNotFoundException(ex).getStatusCode());
     }
+
+    @Test
+    void handleInvalidSyntaxException(){
+        InvalidSyntaxException ex = new InvalidSyntaxException();
+        assertEquals(HttpStatus.BAD_REQUEST, handler.handleInvalidSyntaxException(ex).getStatusCode());
+    }
 }

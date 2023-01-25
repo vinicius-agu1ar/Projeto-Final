@@ -10,6 +10,7 @@ public enum ErrorCode {
     BAD_REQUEST("Request invalid"),
     INVALID_PARAMETER("Invalid request parameter"),
     INVALID_DATE_USAGE("Invalid date, please check before performing this request again"),
+    INVALID_SYNTAX("Invalid syntax, please check before performing this request again"),
     INTERNAL_SERVER_ERROR("Internal error has occurred."),
     ORDER_NOT_FOUND("Order not found, check before making this request again"),
     ADDRESS_NOT_FOUND("Address not found, check before making this request again"),
