@@ -1,0 +1,413 @@
+openapi: 3.0.1
+info:
+  title: MS Order
+  description: Projeto de micro-serviço de pedidos
+  version: 0.0.4
+  termsOfService: https://github.com/vinicius-agu1ar/Projeto-Final/blob/master/README.md
+  contact:
+    name: Vinicius
+    email: vinicius.aguiar.pb@compass.com.br
+    url: https://github.com/vinicius-agu1ar/Projeto-Final
+  license:
+    name: GPLv3
+    url: https://gnu.org/licenses/gpl-3.0.html
+servers:
+  - url: http://localhost:{port}
+    description: API do cais
+    variables:
+      port:
+        default: '8080'
+paths:
+  /api/pedidos:
+    get:
+      tags:
+        - Order
+      parameters:
+        - name: pageable
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/Pageable'
+      summary: Lista todos os Orders
+      description: "Através desse endpoint você poderá listar todos os Orders. Existem filtros para o retorno da requisição, utilizando os Params. Ex: Campo 'sort' para asc ou desc (valor Total). Ex: Listar por Cpf."
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponseDTO"
+        404:
+          description: Not Found
+        '403':
+          description: FORBIDDEN
+        5XX:
+          description: "Erro no servidor, tente mais tarde!"
+    post:
+      summary: Cadastra uma nova Order
+      description: "Através desse endpoint você poderá cadastrar novas Orders. Se algum campo obrigatório for violado, retornará 400 com uma mensagem informando o campo e o erro, se o parametrô estiver errado, retornará um 404"
+      tags:
+        - Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderRequestDTO"
+      responses:
+        201:
+          description: CREATED
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponseDTO"
+        400:
+          description: BAD REQUEST
+          content:
+            application/json:
+              example: {
+                "code": "BAD_REQUEST",
+                "message": "Request invalid",
+                "details": [
+                  "name: não deve estar em branco"
+                ]
+              }
+        '403':
+          description: FORBIDDEN
+        409:
+          description: CONFLICT
+          content:
+            application/json:
+              example: {
+                "code": "ENTITY_IS_IN_USE",
+                "message": "Entity is in use, please check before performing this action again",
+                "mensagem": "A entidade está em uso, verifique antes de executar esta ação novamente",
+                "details": [
+                  "ENTITY_IS_IN_USE"
+                ]
+              }
+        5XX:
+          description: "Erro no servidor, tente mais tarde!"
+    head:
+      summary: Envia a Order para History
+      description: "Parametro de Post que envia o Order para o MS History"
+      tags:
+        - Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderRequestDTO"
+      responses:
+        201:
+          description: CREATED
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResumeResponseDTO"
+        400:
+          description: BAD REQUEST
+          content:
+            application/json:
+              example: {
+                "code": "BAD_REQUEST",
+                "message": "Request invalid",
+                "details": [
+                  "name: não deve estar em branco"
+                ]
+              }
+        '403':
+          description: FORBIDDEN
+        5XX:
+          description: "Erro no servidor, tente mais tarde!"
+  /api/pedidos/{id}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: Lista as Orders por id
+      description: "Através desse endpoint você poderá consultar Orders por id. Se não existir, retornará 404."
+      tags:
+        - Order
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponseDTO"
+        400:
+          description: BAD REQUEST
+        404:
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderNotFound'
+        '403':
+          description: FORBIDDEN
+        5XX:
+          description: "Erro no servidor, tente mais tarde!"
+    put:
+      summary: Atualizar Order por id
+      description: "Através desse endpoint você poderá atualizar uma Order. Se algum campo obrigatório for violado, retornará 400 com uma mensagem informando o campo e o erro, se o ID informado não existir, retornará 404."
+      tags:
+        - Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequestDTO'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponseDTO'
+        404:
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderNotFound'
+        400:
+          description: BAD REQUEST
+          content:
+            application/json:
+              example: {
+                "code": "BAD_REQUEST",
+                "message": "Requisição Inválida",
+                "details": [
+                  "nome : não deve estar em branco"
+                ]
+              }
+        '403':
+          description: FORBIDDEN
+        5XX:
+          description: "Erro no servidor, tente mais tarde!"
+    delete:
+      summary: Excluir Order por id
+      description: "Através desse endpoint você poderá excluir uma Company. Se o ID informado não existir, retornará 404."
+      tags:
+        - Order
+      responses:
+        204:
+          description: NO CONTENT
+        400:
+          description: BAD REQUEST
+        '403':
+          description: FORBIDDEN
+        404:
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderNotFound'
+        5XX:
+          description: "Erro no servidor, tente mais tarde!"
+  /api/itens/{id}/{name}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+      - name: name
+        in: path
+        schema:
+          type: string
+        required: true
+    patch:
+      summary: Atualizar nome por id
+      description: "Através desse endpoint você poderá atualizar nome por id. Se não existir, retornará 404."
+      tags:
+        - Item
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemResponseDTO'
+        400:
+          description: BAD REQUEST
+        '403':
+          description: FORBIDDEN
+        404:
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemNotFound'
+        5XX:
+          description: "Erro no servidor, tente mais tarde!"
+components:
+  schemas:
+    ItemRequestDTO:
+      type: object
+      required:
+        - name
+        - expirationDate
+        - price
+        - description
+      properties:
+        name:
+          type: string
+          example: Tenis
+        expirationDate:
+          type: string
+          format: date
+          example: 2023-10-12
+        price:
+          type: number
+          example: 599.90
+        description:
+          type: string
+          example: Tenis tamanho 41
+    ItemNotFound:
+      type: object
+      properties:
+        code:
+          type: string
+          example: ITEM_NOT_FOUND
+        message:
+          type: string
+          example: Item not found, check before making this request again
+        mensagem:
+          type: string
+          example: Item não encontrado, verifique antes de fazer esta solicitação novamente
+        details:
+          type: array
+          items:
+            type: string
+            example: ITEM_NOT_FOUND
+    ItemResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Tenis
+        expirationDate:
+          type: string
+          format: date
+          example: 2023-10-12
+        price:
+          type: number
+          example: 599.90
+        description:
+          type: string
+          example: Tenis tamanho 41
+    OrderResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        cpf:
+          type: string
+          example: 34633609181
+        total:
+          type: number
+          example: 599.90
+        item:
+          $ref: '#/components/schemas/ItemResponseDTO'
+        address:
+          $ref: '#/components/schemas/AddressResponseDTO'
+    OrderResumeResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        total:
+          type: number
+          example: 599.90
+    OrderRequestDTO:
+      type: object
+      required:
+        - cpf
+        - item
+        - address
+      properties:
+        cpf:
+          type: string
+          example: 34633609181
+        item:
+          $ref: '#/components/schemas/ItemRequestDTO'
+        address:
+          $ref: '#/components/schemas/AddressRequestDTO'
+    OrderNotFound:
+      type: object
+      properties:
+        code:
+          type: string
+          example: ORDER_NOT_FOUND
+        message:
+          type: string
+          example: Order not found, check before making this request again
+        mensagem:
+          type: string
+          example: Pedido não encontrado, verifique antes de fazer esta solicitação novamente
+        details:
+          type: array
+          items:
+            type: string
+            example: ORDER_NOT_FOUND
+    AddressRequestDTO:
+      type: object
+      required:
+        - numero
+        - cep
+      properties:
+        numero:  
+          type: integer
+          example: 12
+        cep:
+          type: number
+          example: 35270030
+    AddressResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        logradouro:
+          type: string
+          example: Rua do Centro
+        numero:
+          type: integer
+          example: 12
+        bairro:
+          type: string
+          example: Centro
+        localidade:
+          type: string
+          example: Brasilia
+        uf:
+          type: string
+          example: DF
+        cep:
+          type: string
+          example: 38250-030
+    Pageable:
+      type: object
+      properties:
+        page:
+          minimum: 0
+          type: integer
+        size:
+          minimum: 10
+          type: integer
+        sort:
+          type: array
+          items:
+            type: string
+            enum:
+              - total,asc
+              - total,desc

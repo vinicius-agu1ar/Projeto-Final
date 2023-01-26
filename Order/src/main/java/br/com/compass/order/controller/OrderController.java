@@ -37,7 +37,7 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderResponseDTO>> findAll(@PageableDefault(size = 10) Pageable pagination, @RequestParam(required = false, name = "CPF") String cpf) {
+    public ResponseEntity<List<OrderResponseDTO>> findAll(@PageableDefault(size = 10) Pageable pagination, @RequestParam(required = false, name = "cpf") String cpf) {
         log.info("Listando Orders com página de {} registros...", pagination.getPageSize());
         List<OrderResponseDTO> responsePage = service.verifyOrderResponseDTO(pagination, cpf);
         return ResponseEntity.status(HttpStatus.OK).body(responsePage);

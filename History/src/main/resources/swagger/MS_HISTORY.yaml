@@ -1,0 +1,141 @@
+openapi: 3.0.1
+info:
+  title: MS Order
+  description: Projeto de micro-serviço de pedidos
+  version: 0.0.4
+  termsOfService: https://github.com/vinicius-agu1ar/Projeto-Final/blob/master/README.md
+  contact:
+    name: Vinicius
+    email: vinicius.aguiar.pb@compass.com.br
+    url: https://github.com/vinicius-agu1ar/Projeto-Final
+  license:
+    name: GPLv3
+    url: https://gnu.org/licenses/gpl-3.0.html
+servers:
+  - url: http://localhost:{port}
+    description: API do cais
+    variables:
+      port:
+        default: '8081'
+paths:
+  /api/pedidos:
+    get:
+      tags:
+        - Order
+      parameters:
+        - name: pageable
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/Pageable'
+      summary: Lista todos os Orders
+      description: "Através desse endpoint você poderá listar todos os Orders. Existem filtros para o retorno da requisição, utilizando os Params. Ex: Campo 'sort' para asc ou desc (valor Total). Ex: Listar por Cpf."
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HistoryMongoResponseDTO"
+        404:
+          description: NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HistoryNotFound"
+        '403':
+          description: FORBIDDEN
+        5XX:
+          description: "Erro no servidor, tente mais tarde!"
+    head:
+      summary: Envia a Order para History
+      description: "Parametro de Post que envia o Order para o MS History"
+      tags:
+        - Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HistoryResponseDTO"
+      responses:
+        201:
+          description: CREATED
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HistoryMongoResponseDTO"
+        400:
+          description: BAD REQUEST
+          content:
+            application/json:
+              example: {
+                "code": "BAD_REQUEST",
+                "message": "Request invalid",
+                "details": [
+                  "name: não deve estar em branco"
+                ]
+              }
+        '403':
+          description: FORBIDDEN
+        5XX:
+          description: "Erro no servidor, tente mais tarde!"
+components:
+  schemas:
+    HistoryNotFound:
+      type: object
+      properties:
+        code:
+          type: string
+          example: HISTORY_NOT_FOUND
+        message:
+          type: string
+          example: History not found, check before making this request again
+        mensagem:
+          type: string
+          example: Historico não encontrado, verifique antes de fazer esta solicitação novamente
+        details:
+          type: array
+          items:
+            type: string
+            example: HISTORY_NOT_FOUND
+    HistoryMongoResponseDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 63d2ca484392c17453dd7e00
+        orderId:
+          type: integer
+          example: 1
+        total:
+          type: number
+          example: 599.90
+        expirationDate:
+          type: string
+          format: date
+          example: 2023-10-12
+    HistoryResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        total:
+          type: number
+          example: 599.90
+    Pageable:
+      type: object
+      properties:
+        page:
+          minimum: 0
+          type: integer
+        size:
+          minimum: 10
+          type: integer
+        sort:
+          type: array
+          items:
+            type: string
+            enum:
+              - historyDate,desc
+              - historyDate,asc

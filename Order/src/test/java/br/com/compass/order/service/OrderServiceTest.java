@@ -13,6 +13,7 @@ import br.com.compass.order.service.dto.request.AddressRequestDTO;
 import br.com.compass.order.service.dto.request.ItemRequestDTO;
 import br.com.compass.order.service.dto.request.OrderRequestDTO;
 import br.com.compass.order.service.dto.response.OrderResponseDTO;
+import br.com.compass.order.service.dto.response.OrderResumeResponseDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -134,20 +136,6 @@ public class OrderServiceTest {
     }
 
     @Test
-    void shouldFindOrderByName_success() {
-        Order order = new Order();
-        OrderResponseDTO response = new OrderResponseDTO();
-
-        Mockito.when(repository.findByCpf(any())).thenReturn(order);
-        Mockito.when(assembler.toModel(order)).thenReturn(response);
-
-        OrderResponseDTO orderResponseDTO = service.findByCpf(any());
-
-        Assertions.assertEquals(response.getCpf(), orderResponseDTO.getCpf());
-        Assertions.assertEquals(response, orderResponseDTO);
-    }
-
-    @Test
     void shouldVerifyOrderResponseDTO_findAll() {
         Page<Order> orderPage = new PageImpl<>(List.of(new Order()));
         List<OrderResponseDTO> orderResponseDTOS = List.of(new OrderResponseDTO());
@@ -161,17 +149,18 @@ public class OrderServiceTest {
     }
 
     @Test
-    void shouldVerifyOrderResponseDTO_findByName() {
+    void shouldVerifyOrderResponseDTO_findByCpf() {
+        Page<Order> orderPage = new PageImpl<>(List.of(new Order()));
+        List<OrderResponseDTO> orderResponseDTOS = List.of(new OrderResponseDTO());
         Order order = new Order();
         order.setCpf("05529003540");
-        OrderResponseDTO response = new OrderResponseDTO();
 
-        Mockito.when(repository.findByCpf(any())).thenReturn(order);
-        Mockito.when(assembler.toModel(order)).thenReturn(response);
+        Mockito.when(repository.findByCpf(any(), any())).thenReturn(orderPage);
+        Mockito.when(assembler.toCollectionModel(orderPage.getContent())).thenReturn(orderResponseDTOS);
 
-        List<OrderResponseDTO> orderResponseDTOS = service.verifyOrderResponseDTO(pageable, order.getCpf());
+        List<OrderResponseDTO> all = service.verifyOrderResponseDTO(pageable, order.getCpf());
 
-        Assertions.assertEquals(orderResponseDTOS.get(0), response);
+        Assertions.assertEquals(all, orderResponseDTOS);
     }
 
     @Test
@@ -179,6 +168,13 @@ public class OrderServiceTest {
         Order order = new Order(1L,"58120254520", BigDecimal.ZERO, new ArrayList<Item>(),new Address());
         BigDecimal bigDecimal = service.finalPrice(order);
         Assertions.assertEquals(bigDecimal, order.getTotal());
+    }
+
+    public OrderResponseDTO getResponse(){
+        OrderResponseDTO responseDTO = new OrderResponseDTO();
+        responseDTO.setOrderId(1L);
+        responseDTO.setTotal(BigDecimal.ONE);
+        return responseDTO;
     }
 
 }

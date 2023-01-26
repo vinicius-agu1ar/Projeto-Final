@@ -105,31 +105,18 @@ public class OrderService {
 
     public List<OrderResponseDTO> findAll(Pageable pageable) {
         log.info("Chamando método findAll - Service Order");
-        Page<Order> pageCompanies = repository.findAll(pageable);
-        return assembler.toCollectionModel(pageCompanies.getContent());
+        Page<Order> pageOrders = repository.findAll(pageable);
+        return assembler.toCollectionModel(pageOrders.getContent());
     }
 
     public List<OrderResponseDTO> verifyOrderResponseDTO(Pageable pageable, String cpf) {
         log.info("Chamando método verifyOrderResponseDTO - Service Order");
-        if (cpf != null) {
-            List<OrderResponseDTO> list = new ArrayList<>();
-            OrderResponseDTO byCpf = findByCpf(cpf);
-            list.add(byCpf);
-            return list;
-        } else {
+        if (cpf == null) {
             return findAll(pageable);
+        } else {
+            List<Order> orders = repository.findByCpf(cpf, pageable).getContent();
+            return assembler.toCollectionModel(orders);
         }
-    }
-
-    public OrderResponseDTO findByCpf(String cpf) {
-        log.info("Chamando método findByCpf - Service Order");
-        Order order = fetchOrFail(cpf);
-        return assembler.toModel(order);
-    }
-
-    private Order fetchOrFail(String cpf) {
-        log.info("Chamando método fetchOrFail - Service Order");
-        return Optional.ofNullable(repository.findByCpf(cpf)).orElseThrow(OrderNotFoundException::new);
     }
 
     public OrderResponseDTO findBy(Long id) {
