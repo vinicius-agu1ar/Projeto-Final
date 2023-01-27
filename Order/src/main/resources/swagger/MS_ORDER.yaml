@@ -13,7 +13,7 @@ info:
     url: https://gnu.org/licenses/gpl-3.0.html
 servers:
   - url: http://localhost:{port}
-    description: API do cais
+    description: MS Order
     variables:
       port:
         default: '8080'
@@ -38,14 +38,12 @@ paths:
               schema:
                 $ref: "#/components/schemas/OrderResponseDTO"
         404:
-          description: Not Found
-        '403':
-          description: FORBIDDEN
+          description: NOT FOUND
         5XX:
           description: "Erro no servidor, tente mais tarde!"
     post:
       summary: Cadastra uma nova Order
-      description: "Através desse endpoint você poderá cadastrar novas Orders. Se algum campo obrigatório for violado, retornará 400 com uma mensagem informando o campo e o erro, se o parametrô estiver errado, retornará um 404"
+      description: "Através desse endpoint você poderá cadastrar novas Orders. Se algum campo obrigatório for violado, retornará 400 com uma mensagem informando o campo e o erro, se o parametro estiver errado, retornará um 400"
       tags:
         - Order
       requestBody:
@@ -71,8 +69,6 @@ paths:
                   "name: não deve estar em branco"
                 ]
               }
-        '403':
-          description: FORBIDDEN
         409:
           description: CONFLICT
           content:
@@ -115,8 +111,6 @@ paths:
                   "name: não deve estar em branco"
                 ]
               }
-        '403':
-          description: FORBIDDEN
         5XX:
           description: "Erro no servidor, tente mais tarde!"
   /api/pedidos/{id}:
@@ -146,8 +140,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OrderNotFound'
-        '403':
-          description: FORBIDDEN
         5XX:
           description: "Erro no servidor, tente mais tarde!"
     put:
@@ -184,8 +176,6 @@ paths:
                   "nome : não deve estar em branco"
                 ]
               }
-        '403':
-          description: FORBIDDEN
         5XX:
           description: "Erro no servidor, tente mais tarde!"
     delete:
@@ -198,8 +188,6 @@ paths:
           description: NO CONTENT
         400:
           description: BAD REQUEST
-        '403':
-          description: FORBIDDEN
         404:
           description: NOT FOUND
           content:
@@ -234,8 +222,6 @@ paths:
                 $ref: '#/components/schemas/ItemResponseDTO'
         400:
           description: BAD REQUEST
-        '403':
-          description: FORBIDDEN
         404:
           description: NOT FOUND
           content:
@@ -293,6 +279,10 @@ components:
         name:
           type: string
           example: Tenis
+        creationDate:
+          type: string
+          format: date
+          example: 2023-01-27
         expirationDate:
           type: string
           format: date
@@ -365,7 +355,7 @@ components:
         - numero
         - cep
       properties:
-        numero:  
+        numero:
           type: integer
           example: 12
         cep:

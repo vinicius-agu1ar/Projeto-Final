@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: MS Order
-  description: Projeto de micro-serviço de pedidos
+  title: MS History
+  description: Projeto de micro-serviço de historico
   version: 0.0.4
   termsOfService: https://github.com/vinicius-agu1ar/Projeto-Final/blob/master/README.md
   contact:
@@ -13,7 +13,7 @@ info:
     url: https://gnu.org/licenses/gpl-3.0.html
 servers:
   - url: http://localhost:{port}
-    description: API do cais
+    description: MS History
     variables:
       port:
         default: '8081'
@@ -28,8 +28,8 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Pageable'
-      summary: Lista todos os Orders
-      description: "Através desse endpoint você poderá listar todos os Orders. Existem filtros para o retorno da requisição, utilizando os Params. Ex: Campo 'sort' para asc ou desc (valor Total). Ex: Listar por Cpf."
+      summary: Lista todos os Histories
+      description: "Através desse endpoint você poderá listar todos os Histories. Existem filtros para o retorno da requisição, utilizando os Params. Ex: Listar por historyDate."
       responses:
         200:
           description: OK
@@ -48,8 +48,8 @@ paths:
         5XX:
           description: "Erro no servidor, tente mais tarde!"
     head:
-      summary: Envia a Order para History
-      description: "Parametro de Post que envia o Order para o MS History"
+      summary: Recebe History de Order
+      description: "Parametro que recebe History de Order"
       tags:
         - Order
       requestBody:
@@ -110,10 +110,10 @@ components:
         total:
           type: number
           example: 599.90
-        expirationDate:
+        historyDate:
           type: string
           format: date
-          example: 2023-10-12
+          example: 2023-01-27
     HistoryResponseDTO:
       type: object
       properties:
